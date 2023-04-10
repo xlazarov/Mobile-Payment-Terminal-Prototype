@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.prototype.ui.theme.backgroundImage
+import com.example.prototype.ui.theme.gradientBackground
 
 @Composable
 fun SimplifiedKeyboard(
@@ -24,13 +24,15 @@ fun SimplifiedKeyboard(
         listOf(".", "0", "Delete")
     )
 
-    Box(modifier = backgroundImage.pointerInput(Unit) {
-        detectTapGestures(
-            onTap = {
-                onAction(ButtonAction.MissClick(it.x, it.y), context)
-            }
-        )
-    }) {
+    Box(modifier = Modifier
+        .gradientBackground()
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onTap = {
+                    onAction(ButtonAction.MissClick(it.x, it.y), context)
+                }
+            )
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

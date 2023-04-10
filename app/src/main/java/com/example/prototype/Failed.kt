@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.Red
-import com.example.prototype.ui.theme.backgroundImage
+import com.example.prototype.ui.theme.gradientBackground
 
 
 @Composable
@@ -25,7 +25,7 @@ fun FailedScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 57.dp)
-                .then(backgroundImage)
+                .gradientBackground()
         )
         Column(
             modifier = Modifier

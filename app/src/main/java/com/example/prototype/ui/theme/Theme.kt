@@ -9,6 +9,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -17,14 +18,13 @@ import androidx.compose.ui.unit.dp
 const val xPad = 22
 const val yPad = 30
 
-val backgroundImage: Modifier = Modifier
-    .clip(
+fun Modifier.gradientBackground(): Modifier =
+    clip(
         shape = RoundedCornerShape(50.dp).copy(
             bottomEnd = ZeroCornerSize,
             bottomStart = ZeroCornerSize
         )
-    )
-    .background(
+    ).background(
         brush = Brush.verticalGradient(
             colors = listOf(
                 Color.White,

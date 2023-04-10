@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.prototype.ui.theme.backgroundImage
+import com.example.prototype.ui.theme.gradientBackground
 
 @Composable
 fun Keyboard(
@@ -19,13 +19,15 @@ fun Keyboard(
 ) {
     val context = LocalContext.current
 
-    Box(modifier = backgroundImage.pointerInput(Unit) {
-        detectTapGestures(
-            onTap = {
-                onAction(ButtonAction.MissClick(it.x, it.y), context)
-            }
-        )
-    }) {
+    Box(modifier = Modifier
+        .gradientBackground()
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onTap = {
+                    onAction(ButtonAction.MissClick(it.x, it.y), context)
+                }
+            )
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,7 +133,9 @@ fun Keyboard(
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (pinScreen) Arrangement.Center else Arrangement.spacedBy(10.dp)
+                horizontalArrangement = if (pinScreen) Arrangement.Center else Arrangement.spacedBy(
+                    10.dp
+                )
 
             ) {
                 if (!pinScreen) {
