@@ -82,7 +82,7 @@ class PaymentViewModel : ViewModel() {
     private fun delete(pinScreen: Boolean) {
         // Delete from PIN
         if (pinScreen) {
-            state = state.copy(pin = state.pin.dropLast(1))
+            state = state.copy(pin = "")
             return
         }
 
