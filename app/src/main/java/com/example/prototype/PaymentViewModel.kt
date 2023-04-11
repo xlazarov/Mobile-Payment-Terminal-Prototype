@@ -13,21 +13,27 @@ import java.io.IOException
 class PaymentViewModel : ViewModel() {
 
     var state by mutableStateOf(PaymentState())
+    private var keyboard by mutableStateOf(KeyboardData())
 
-    fun onAction(action: ButtonAction, context: Context) {
-        if (action !is ButtonAction.MissClick) {
+    fun onAction(action: KeyboardAction, context: Context) {
+        if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.Layout)) {
             vibration(context)
         }
         when (action) {
-            is ButtonAction.MissClick -> recordCoordinates(action.x, action.y)
-            is ButtonAction.Number -> enterNumber(action.number, action.pinScreen)
-            is ButtonAction.Delete -> delete(action.pinScreen)
-            is ButtonAction.Decimal -> enterDecimal()
+            is KeyboardAction.Number -> enterNumber(action.number, action.pinScreen)
+            is KeyboardAction.Delete -> delete(action.pinScreen)
+            is KeyboardAction.Decimal -> enterDecimal()
+            is KeyboardAction.MissClick -> recordCoordinates(action.x, action.y)
+            is KeyboardAction.Layout -> setKeyboard(action.layout, action.isRandomized)
         }
     }
 
+    private fun setKeyboard(layout: Array<Array<String>>, isRandomized: Boolean) {
+        keyboard = keyboard.copy(isRandomized = isRandomized, keyboardLayout = layout)
+    }
+
     private fun recordCoordinates(x: Float, y: Float) {
-        state = state.copy(missClickData = state.missClickData + Pair(x, y))
+        keyboard = keyboard.copy(missClickData = keyboard.missClickData + Pair(x, y))
     }
 
     fun alignDecimal() {
@@ -59,7 +65,7 @@ class PaymentViewModel : ViewModel() {
     }
 
     private fun resetTapData() {
-        state = state.copy(missClickData = emptyList())
+        keyboard = keyboard.copy(missClickData = emptyList())
     }
 
     fun resetPayment() {
@@ -157,9 +163,11 @@ class PaymentViewModel : ViewModel() {
     }
 
     fun storeAnalysis(context: Context) {
+        val fileName =
+            if (keyboard.isRandomized) "miss_clicks_randomized.csv" else "miss_clicks.csv"
         try {
-            val file = File(context.filesDir, "miss_click_analysis.csv")
-            for (missClick in state.missClickData) {
+            val file = File(context.filesDir, fileName)
+            for (missClick in keyboard.missClickData) {
                 file.appendText(analyzeMissClick(missClick))
             }
             file.appendText("\n")
@@ -176,23 +184,13 @@ class PaymentViewModel : ViewModel() {
         val column = getColumn(x)
         val row = getRow(y)
         val number = getMissClickedNumber(column, row)
-        return "Miss-click at ($x, $y), of column = $column and row = $row, was intended for number $number \n"
+        return "Miss-click at ($x, $y), of column = $column and row = $row, " +
+                "was intended for number $number \n"
     }
 
     private fun getMissClickedNumber(column: Int?, row: Int?): Int? {
-        return when (column to row) {
-            1 to 1 -> 1
-            2 to 1 -> 2
-            3 to 1 -> 3
-            1 to 2 -> 4
-            2 to 2 -> 5
-            3 to 2 -> 6
-            1 to 3 -> 7
-            2 to 3 -> 8
-            3 to 3 -> 9
-            2 to 4 -> 0
-            else -> null
-        }
+        if (column == null || row == null) return null
+        return keyboard.keyboardLayout[row - 1][column - 1].toInt()
     }
 
     companion object {
