@@ -28,7 +28,7 @@ import com.example.prototype.ui.theme.*
 @Composable
 fun EnterPinScreen(
     state: PaymentState,
-    onAction: (ButtonAction, Context) -> Unit,
+    onAction: (KeyboardAction, Context) -> Unit,
     onConfirmButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
@@ -91,7 +91,7 @@ fun PinScreenTitle(state: PaymentState) {
 @Composable
 fun PinButtons(
     state: PaymentState,
-    onAction: (ButtonAction, Context) -> Unit,
+    onAction: (KeyboardAction, Context) -> Unit,
     onConfirmButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
@@ -127,7 +127,7 @@ fun PinButtons(
             modifier = Modifier.size(62.dp),
             elevation = null,
             colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
-            onClick = { onAction(ButtonAction.Delete(true), context) })
+            onClick = { onAction(KeyboardAction.Delete(true), context) })
         {
             Icon(
                 Icons.Rounded.ArrowBack,

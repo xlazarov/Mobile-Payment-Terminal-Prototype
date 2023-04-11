@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.prototype.ui.theme.*
@@ -18,7 +17,7 @@ import com.example.prototype.ui.theme.*
 @Composable
 fun EnterPriceScreen(
     state: PaymentState,
-    onAction: (ButtonAction, Context) -> Unit,
+    onAction: (KeyboardAction, Context) -> Unit,
     onCancelButtonClicked: () -> Unit = {},
     onContinueButtonClicked: () -> Unit = {}
 ) {

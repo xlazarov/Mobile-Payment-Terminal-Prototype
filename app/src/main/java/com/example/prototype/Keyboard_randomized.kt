@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -13,23 +14,24 @@ import com.example.prototype.ui.theme.gradientBackground
 
 @Composable
 fun RandomizedKeyboard(
-    onAction: (ButtonAction, Context) -> Unit
+    onAction: (KeyboardAction, Context) -> Unit
 ) {
     val context = LocalContext.current
-    val num = (0..9).shuffled()
-    val keyboardLayout = listOf(
-        listOf(num[0], num[1], num[2]),
-        listOf(num[3], num[4], num[5]),
-        listOf(num[6], num[7], num[8]),
-        listOf(num[9])
+    val num = remember { (0..9).map { it.toString() }.shuffled() }
+    val keyboardLayout: Array<Array<String>> = arrayOf(
+        arrayOf(num[0], num[1], num[2]),
+        arrayOf(num[3], num[4], num[5]),
+        arrayOf(num[6], num[7], num[8]),
+        arrayOf(num[9])
     )
+    onAction(KeyboardAction.Layout(layout = keyboardLayout, isRandomized = true), context)
 
     Box(modifier = Modifier
         .gradientBackground()
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = {
-                    onAction(ButtonAction.MissClick(it.x, it.y), context)
+                    onAction(KeyboardAction.MissClick(it.x, it.y), context)
                 }
             )
         }) {
@@ -44,17 +46,17 @@ fun RandomizedKeyboard(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = if (row.size > 1) {
-                        Arrangement.spacedBy(10.dp)
+                        Arrangement.SpaceBetween
                     } else {
                         Arrangement.SpaceBetween
                     }
                 ) {
                     row.forEach { symbol ->
                         KeyboardButton(
-                            symbol = symbol.toString(),
+                            symbol = symbol,
                             onClick = {
                                 onAction(
-                                    ButtonAction.Number(symbol, true),
+                                    KeyboardAction.Number(symbol.toInt(), true),
                                     context
                                 )
                             },
