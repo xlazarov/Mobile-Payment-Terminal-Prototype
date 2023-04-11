@@ -3,15 +3,14 @@ package com.example.prototype
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,38 +64,28 @@ fun PaymentAnimation() {
     LottieAnimation(
         composition = compositeResult.value,
         progress = progressAnimation,
-        modifier = Modifier
-            .size(getScreenWidth().dp)
+        modifier = Modifier.size(getScreenWidth())
     )
 }
 
 @Composable
-fun getScreenWidth(): Int {
-    val width = with(LocalContext.current) {
-        (resources.displayMetrics.widthPixels / resources.displayMetrics.density).toInt()
-    }
-    return width - 2 * xPad
+fun getScreenWidth(): Dp {
+    return (LocalConfiguration.current.screenWidthDp - 2 * xPad).dp
 }
 
 @Composable
 fun LEDprogressBar(navController: NavController) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Black),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
         val coroutineScope = rememberCoroutineScope()
-        val continueReading = remember { mutableStateOf(true) }
-        val ledWidth = (getScreenWidth().dp - (75.dp)) / 4
         val progress = remember { mutableStateOf(1) }
-        val context = LocalContext.current
+        val lastTag = remember { mutableStateOf<String?>(null) }
 
-        NfcReader(onTagDiscovered = {
-            if (continueReading.value) {
-                continueReading.value = false
-                vibration(context)
+        NfcReader(onTagDiscovered = { tag: String? ->
+            if (lastTag.value != tag) {
+                lastTag.value = tag
                 coroutineScope.launch {
                     for (i in 1..3) {
                         delay(250)
@@ -107,23 +96,18 @@ fun LEDprogressBar(navController: NavController) {
                 }
             }
         })
+        val numLeds = 4
+        val spaceBetweenLeds = 20.dp
+        val ledWidth = (getScreenWidth() - (spaceBetweenLeds * (numLeds - 1))) / numLeds
 
-        for (i in 0 until progress.value) {
+        for (i in 0 until numLeds) {
+            val backgroundColor = if (i < progress.value) Green else Green.copy(alpha = 0.2f)
             Box(
                 modifier = Modifier
                     .height(15.dp)
                     .width(ledWidth)
                     .clip(CircleShape)
-                    .background(Green)
-            )
-        }
-        for (i in progress.value until 4) {
-            Box(
-                modifier = Modifier
-                    .height(15.dp)
-                    .width(ledWidth)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Green.copy(alpha = 0.2f))
+                    .background(backgroundColor)
             )
         }
     }
