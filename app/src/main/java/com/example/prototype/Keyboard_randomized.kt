@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.prototype.ui.theme.gradientBackground
 
 @Composable
 fun RandomizedKeyboard(
@@ -24,23 +23,33 @@ fun RandomizedKeyboard(
         arrayOf(num[6], num[7], num[8]),
         arrayOf(num[9])
     )
-    onAction(KeyboardAction.Layout(layout = keyboardLayout, isRandomized = true), context)
+    onAction(
+        KeyboardAction.SetKeyboard(
+            isRandomized = true,
+            layout = keyboardLayout,
+            width = getScreenWidthPx()
+        ), context
+    )
 
-    Box(modifier = Modifier
-        .gradientBackground()
-        .pointerInput(Unit) {
-            detectTapGestures(
-                onTap = {
-                    onAction(KeyboardAction.MissClick(it.x, it.y), context)
-                }
-            )
-        }) {
+    Box(
+        modifier = Modifier.gradientBackground()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(vertical = 30.dp, horizontal = 22.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(vertical = yPad.dp, horizontal = xPad.dp)
+            .align(Alignment.BottomCenter)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            onAction(
+                                KeyboardAction.MissClick(it.x, it.y),
+                                context
+                            )
+                        }
+                    )
+                },
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             keyboardLayout.forEach { row ->
                 Row(
@@ -48,7 +57,7 @@ fun RandomizedKeyboard(
                     horizontalArrangement = if (row.size > 1) {
                         Arrangement.SpaceBetween
                     } else {
-                        Arrangement.SpaceBetween
+                        Arrangement.SpaceEvenly
                     }
                 ) {
                     row.forEach { symbol ->
@@ -59,8 +68,7 @@ fun RandomizedKeyboard(
                                     KeyboardAction.Number(symbol.toInt(), true),
                                     context
                                 )
-                            },
-                            pinScreen = true
+                            }
                         )
                     }
                 }

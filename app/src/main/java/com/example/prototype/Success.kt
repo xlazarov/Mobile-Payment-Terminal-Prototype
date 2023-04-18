@@ -6,7 +6,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.prototype.ui.theme.BlueButton
-import com.example.prototype.ui.theme.gradientBackground
 
 
 @Composable
@@ -28,7 +27,7 @@ fun SuccessScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 35.dp, start = 22.dp, end = 22.dp)
+                .padding(bottom = yPad.dp, start = xPad.dp, end = xPad.dp)
                 .align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween

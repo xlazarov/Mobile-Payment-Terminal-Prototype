@@ -11,7 +11,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prototype.ui.theme.*
+import com.example.prototype.ui.theme.BabyBlue
+import com.example.prototype.ui.theme.BlueButton
+import com.example.prototype.ui.theme.LightBlue
+import com.example.prototype.ui.theme.Red
 
 
 @Composable
@@ -24,7 +27,7 @@ fun EnterPriceScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 35.dp),
+            .padding(vertical = yPad.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -43,7 +46,7 @@ fun EnterPriceScreen(
                 onAction = onAction,
                 pinScreen = false
             )
-            Column(modifier = Modifier.padding(horizontal = 22.dp)) {
+            Column(modifier = Modifier.padding(horizontal = xPad.dp)) {
                 NavigationButton(BlueButton, "Pokračovať", onContinueButtonClicked)
                 Spacer(modifier = Modifier.height(12.dp))
                 NavigationButton(Red, "Zrušiť", onCancelButtonClicked)
@@ -54,7 +57,7 @@ fun EnterPriceScreen(
 
 @Composable
 fun KeyboardTextField(state: PaymentState) {
-    Column(modifier = Modifier.padding(horizontal = 22.dp)){
+    Column(modifier = Modifier.padding(horizontal = xPad.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = state.price,

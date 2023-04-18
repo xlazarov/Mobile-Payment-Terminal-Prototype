@@ -8,16 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
 import com.example.prototype.ui.theme.Green
 import com.example.prototype.ui.theme.Red
-import com.example.prototype.ui.theme.xPad
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -30,7 +27,7 @@ fun TapCardScreen(
 ) {
     Column(
         modifier = Modifier
-            .padding(vertical = 35.dp, horizontal = 22.dp)
+            .padding(vertical = yPad.dp, horizontal = xPad.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
@@ -42,7 +39,7 @@ fun TapCardScreen(
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
-        LEDprogressBar(navController)
+        LedProgressBar(navController)
         NavigationButton(color = Red, text = "Zrušiť platbu", onCancelButtonClicked)
     }
 }
@@ -64,29 +61,24 @@ fun PaymentAnimation() {
     LottieAnimation(
         composition = compositeResult.value,
         progress = progressAnimation,
-        modifier = Modifier.size(getScreenWidth())
+        modifier = Modifier.size(getScreenWidthDp())
     )
 }
 
 @Composable
-fun getScreenWidth(): Dp {
-    return (LocalConfiguration.current.screenWidthDp - 2 * xPad).dp
-}
-
-@Composable
-fun LEDprogressBar(navController: NavController) {
+fun LedProgressBar(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val coroutineScope = rememberCoroutineScope()
         val progress = remember { mutableStateOf(1) }
-        val lastTag = remember { mutableStateOf<String?>(null) }
+        var tagDetected by remember { mutableStateOf(false) }
 
-        NfcReader(onTagDiscovered = { tag: String? ->
-            if (lastTag.value != tag) {
-                lastTag.value = tag
+        if (!tagDetected) {
+            NfcReader(onTagDiscovered = {
                 coroutineScope.launch {
+                    tagDetected = true // set tagDetected to true to stop further tag reading
                     for (i in 1..3) {
                         delay(250)
                         progress.value++
@@ -94,11 +86,11 @@ fun LEDprogressBar(navController: NavController) {
                     delay(250)
                     navController.navigate(PaymentScreen.PIN.name)
                 }
-            }
-        })
+            })
+        }
         val numLeds = 4
         val spaceBetweenLeds = 20.dp
-        val ledWidth = (getScreenWidth() - (spaceBetweenLeds * (numLeds - 1))) / numLeds
+        val ledWidth = (getScreenWidthDp() - (spaceBetweenLeds * (numLeds - 1))) / numLeds
 
         for (i in 0 until numLeds) {
             val backgroundColor = if (i < progress.value) Green else Green.copy(alpha = 0.2f)

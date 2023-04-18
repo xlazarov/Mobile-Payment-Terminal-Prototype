@@ -1,14 +1,10 @@
 package com.example.prototype
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import java.io.File
-import java.io.IOException
 
 class PaymentViewModel : ViewModel() {
 
@@ -16,7 +12,7 @@ class PaymentViewModel : ViewModel() {
     private var keyboard by mutableStateOf(KeyboardData())
 
     fun onAction(action: KeyboardAction, context: Context) {
-        if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.Layout)) {
+        if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.SetKeyboard)) {
             vibration(context)
         }
         when (action) {
@@ -24,16 +20,12 @@ class PaymentViewModel : ViewModel() {
             is KeyboardAction.Delete -> delete(action.pinScreen)
             is KeyboardAction.Decimal -> enterDecimal()
             is KeyboardAction.MissClick -> recordCoordinates(action.x, action.y)
-            is KeyboardAction.Layout -> setKeyboard(action.layout, action.isRandomized)
+            is KeyboardAction.SetKeyboard -> setKeyboard(
+                action.isRandomized,
+                action.layout,
+                action.width
+            )
         }
-    }
-
-    private fun setKeyboard(layout: Array<Array<String>>, isRandomized: Boolean) {
-        keyboard = keyboard.copy(isRandomized = isRandomized, keyboardLayout = layout)
-    }
-
-    private fun recordCoordinates(x: Float, y: Float) {
-        keyboard = keyboard.copy(missClickData = keyboard.missClickData + Pair(x, y))
     }
 
     fun alignDecimal() {
@@ -65,7 +57,7 @@ class PaymentViewModel : ViewModel() {
     }
 
     private fun resetTapData() {
-        keyboard = keyboard.copy(missClickData = emptyList())
+        keyboard = keyboard.copy(missClicks = emptyList())
     }
 
     fun resetPayment() {
@@ -139,42 +131,53 @@ class PaymentViewModel : ViewModel() {
         formatPriceString()
     }
 
-    private fun getRow(y: Float): Int? {
-        val padding = 5f
-        val size = 70f
-        return when (y) {
-            in 0f..(size + padding) -> 1
-            in ((size + padding + 1)..(2 * size + 3 * padding)) -> 2
-            in ((2 * size + 3 * padding + 1)..(3 * size + 5 * padding)) -> 3
-            in ((3 * size + 5 * padding + 1)..(4 * size + 6 * padding)) -> 4
-            else -> null
+    private fun setKeyboard(isRandomized: Boolean, layout: Array<Array<String>>, width: Float) {
+        keyboard = keyboard.copy(
+            isRandomized = isRandomized,
+            layout = layout,
+            width = width
+        )
+    }
+
+    private fun recordCoordinates(x: Float, y: Float) {
+        keyboard = keyboard.copy(missClicks = keyboard.missClicks + Pair(x, y))
+    }
+
+    private fun getRow(y: Float): Int {
+        return when {
+            y <= dpToPx(keyboard.buttonSize) -> 1
+            y <= 2 * dpToPx(keyboard.buttonSize) -> 2
+            y <= 3 * dpToPx(keyboard.buttonSize) -> 3
+            else -> 4
         }
     }
 
-    private fun getColumn(x: Float): Int? {
-        val size = 70f
-        val padding = 5f
-        return when (x) {
-            in 0f..(size + padding) -> 1
-            in ((size + padding + 1)..(2 * size + 3 * padding)) -> 2
-            in ((2 * size + 3 * padding + 1)..(3 * size + 4 * padding)) -> 3
-            else -> null
+    private fun getButtonMargin(): Float =
+        (keyboard.width - 3 * dpToPx(keyboard.buttonSize)) / 4
+
+    private fun getColumn(x: Float): Int {
+        val margin = getButtonMargin()
+        return when {
+            x <= dpToPx(keyboard.buttonSize) + margin -> 1
+            x <= 2 * dpToPx(keyboard.buttonSize) + 3 * margin -> 2
+            else -> 3
         }
     }
 
     fun storeAnalysis(context: Context) {
-        val fileName =
-            if (keyboard.isRandomized) "miss_clicks_randomized.csv" else "miss_clicks.csv"
-        try {
-            val file = File(context.filesDir, fileName)
-            for (missClick in keyboard.missClickData) {
-                file.appendText(analyzeMissClick(missClick))
-            }
-            file.appendText("\n")
-        } catch (e: IOException) {
-            Log.e(TAG, "Error closing file writer: ${e.message}")
-            e.printStackTrace()
+//        val fileName =
+//            if (keyboard.isRandomized) "miss_clicks_randomized.csv" else "miss_clicks.csv"
+//        try {
+//            val file = File(context.filesDir, fileName)
+        for (missClick in keyboard.missClicks) {
+            // file.appendText(analyzeMissClick(missClick))
+            analyzeMissClick(missClick)
         }
+//            file.appendText("\n")
+//        } catch (e: IOException) {
+//            Log.e(TAG, "Error closing file writer: ${e.message}")
+//            e.printStackTrace()
+//        }
         resetTapData()
     }
 
@@ -184,13 +187,12 @@ class PaymentViewModel : ViewModel() {
         val column = getColumn(x)
         val row = getRow(y)
         val number = getMissClickedNumber(column, row)
-        return "Miss-click at ($x, $y), of column = $column and row = $row, " +
-                "was intended for number $number \n"
+        println("[$x, $y], column = $column, row = $row, intended number: $number \n")
+        return "[$x, $y], column = $column, row = $row, intended number: $number \n"
     }
 
-    private fun getMissClickedNumber(column: Int?, row: Int?): Int? {
-        if (column == null || row == null) return null
-        return keyboard.keyboardLayout[row - 1][column - 1].toInt()
+    private fun getMissClickedNumber(column: Int, row: Int): Int {
+        return keyboard.layout[row - 1][column - 1].toInt()
     }
 
     companion object {

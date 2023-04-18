@@ -7,6 +7,9 @@ sealed class KeyboardAction {
     data class MissClick(val x: Float, val y: Float) : KeyboardAction()
 
     @Suppress("EqualsAndHashCode")
-    data class Layout(val layout: Array<Array<String>>, val isRandomized: Boolean) :
-        KeyboardAction()
+    data class SetKeyboard(
+        val isRandomized: Boolean,
+        val layout: Array<Array<String>>,
+        val width: Float
+    ) : KeyboardAction()
 }

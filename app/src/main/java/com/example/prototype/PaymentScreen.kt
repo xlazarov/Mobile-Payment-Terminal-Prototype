@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
  * enum values that represent the screens in the app
  */
 enum class PaymentScreen {
-    Start,
     Price,
     TapCard,
     PIN,
@@ -36,6 +35,8 @@ fun PaymentApp(
     viewModel: PaymentViewModel = PaymentViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val context = LocalContext.current
+
     Scaffold { innerPadding ->
         val state = viewModel.state
 
@@ -44,9 +45,6 @@ fun PaymentApp(
             startDestination = PaymentScreen.Price.name,
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(route = PaymentScreen.Start.name) {
-
-            }
             composable(route = PaymentScreen.Price.name) {
                 EnterPriceScreen(
                     state = state,
@@ -73,7 +71,6 @@ fun PaymentApp(
                 }
             }
             composable(route = PaymentScreen.PIN.name) {
-                val context = LocalContext.current
                 val coroutineScope = rememberCoroutineScope()
                 EnterPinScreen(
                     state = state,
@@ -82,7 +79,6 @@ fun PaymentApp(
                         coroutineScope.launch {
                             checkCorrectPin(viewModel, navController)
                         }
-                        viewModel.storeAnalysis(context)
                     },
                     onCancelButtonClicked = {
                         navController.navigate(PaymentScreen.TapCard.name)
@@ -102,6 +98,7 @@ fun PaymentApp(
                     onCloseButtonClicked = {
                         cancelPaymentAndNavigateToStart(viewModel, navController)
                     })
+                viewModel.storeAnalysis(context)
             }
             composable(route = PaymentScreen.Failure.name) {
                 FailedScreen(
@@ -113,6 +110,7 @@ fun PaymentApp(
                     onCancelButtonClicked = {
                         cancelPaymentAndNavigateToStart(viewModel, navController)
                     })
+                viewModel.storeAnalysis(context)
             }
         }
     }
@@ -140,7 +138,7 @@ private suspend fun checkCorrectPin(
 
 
 /**
- * Resets the [PaymentState] and pops up to [PaymentScreen.Start]
+ * Resets the [PaymentState] and pops up to [PaymentScreen.Price]
  */
 private fun cancelPaymentAndNavigateToStart(
     viewModel: PaymentViewModel,

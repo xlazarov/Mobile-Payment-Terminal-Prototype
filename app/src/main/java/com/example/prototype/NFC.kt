@@ -9,12 +9,12 @@ import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
-fun NfcReader(onTagDiscovered: (String?) -> Unit) {
+fun NfcReader(onTagDiscovered: () -> Unit) {
     val context = LocalContext.current
     val nfcAdapter = LocalNfcAdapter.current ?: NfcAdapter.getDefaultAdapter(context)
 
     DisposableEffect(nfcAdapter) {
-        val callback = NfcAdapter.ReaderCallback { onTagDiscovered(null) }
+        val callback = NfcAdapter.ReaderCallback { onTagDiscovered() }
 
         nfcAdapter.enableReaderMode(
             context as Activity,

@@ -35,12 +35,12 @@ fun EnterPinScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 35.dp),
+            .padding(vertical = yPad.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 22.dp)
+            modifier = Modifier.padding(horizontal = xPad.dp)
         ) {
             PaymentInfo(state)
             Spacer(modifier = Modifier.height(10.dp))
@@ -49,9 +49,7 @@ fun EnterPinScreen(
             PinDots(state)
         }
         Column {
-            RandomizedKeyboard(
-                onAction = onAction
-            )
+            RandomizedKeyboard(onAction = onAction)
             PinButtons(state, onAction, onConfirmButtonClicked, onCancelButtonClicked)
         }
     }
@@ -99,7 +97,7 @@ fun PinButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 22.dp),
+            .padding(horizontal = xPad.dp),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
