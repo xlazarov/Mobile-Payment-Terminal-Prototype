@@ -1,37 +1,11 @@
 package com.example.prototype.ui.theme
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
-const val xPad = 22
-const val yPad = 30
-
-fun Modifier.gradientBackground(): Modifier =
-    clip(
-        shape = RoundedCornerShape(50.dp).copy(
-            bottomEnd = ZeroCornerSize,
-            bottomStart = ZeroCornerSize
-        )
-    ).background(
-        brush = Brush.verticalGradient(
-            colors = listOf(
-                Color.White,
-                GreyBackground
-            )
-        )
-    )
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
