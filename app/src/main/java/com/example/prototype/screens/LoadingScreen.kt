@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState

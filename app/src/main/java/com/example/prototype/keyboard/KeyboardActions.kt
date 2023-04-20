@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.keyboard
 
 sealed class KeyboardAction {
     data class Number(val number: Int, val pinScreen: Boolean) : KeyboardAction()
@@ -7,9 +7,6 @@ sealed class KeyboardAction {
     data class MissClick(val x: Float, val y: Float) : KeyboardAction()
 
     @Suppress("EqualsAndHashCode")
-    data class SetKeyboard(
-        val isRandomized: Boolean,
-        val layout: Array<Array<String>>,
-        val width: Float
-    ) : KeyboardAction()
+    data class SetKeyboard(val isRandomized: Boolean, val layout: Array<Array<String>>) :
+        KeyboardAction()
 }

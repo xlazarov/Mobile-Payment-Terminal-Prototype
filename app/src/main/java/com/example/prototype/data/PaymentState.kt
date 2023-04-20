@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.data
 
 data class PaymentState(
     val price: String = "0",

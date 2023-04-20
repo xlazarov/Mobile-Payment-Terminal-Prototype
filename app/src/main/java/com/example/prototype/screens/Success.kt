@@ -1,54 +1,48 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.prototype.app.gradient
+import com.example.prototype.app.screenPadding
+import com.example.prototype.data.PaymentState
 import com.example.prototype.ui.theme.BlueButton
-import com.example.prototype.ui.theme.Red
 
 
 @Composable
-fun FailedScreen(
+fun SuccessScreen(
     state: PaymentState,
-    onRetryButtonClicked: () -> Unit,
-    onCancelButtonClicked: () -> Unit
+    onCloseButtonClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = yPad.dp)
+            .padding(top = 60.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 57.dp)
-                .gradientBackground()
+                .gradient()
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = yPad.dp, start = xPad.dp, end = xPad.dp)
+                .screenPadding()
                 .align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            ErrorIcon()
-            TransactionResult(
-                "Platba zlyhala",
-                "Počet pokusov o zadanie kódu PIN bol prekročený."
-            )
+            SuccessIcon()
+            TransactionResult(result = "Platba prebehla úspešne!", details = "Ďakujeme.")
             Column {
                 TransactionDetails(state)
                 Spacer(modifier = Modifier.height(30.dp))
-                NavigationButton(BlueButton, "Skúsiť znova", onRetryButtonClicked)
-                Spacer(modifier = Modifier.height(12.dp))
-                NavigationButton(Red, "Zrušiť", onCancelButtonClicked)
+                NavigationButton(BlueButton, "Zatvoriť", onCloseButtonClicked)
             }
         }
     }
 }
-
-
 

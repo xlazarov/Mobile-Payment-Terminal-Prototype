@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.keyboard
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.prototype.R
 import com.example.prototype.ui.theme.LightBlue
 
 
@@ -22,12 +24,12 @@ fun KeyboardButton(
 ) {
 
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(80.dp)
             .clip(CircleShape)
-            .clickable { onClick() }
-    ) {
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+        ) {
         when (symbol) {
             "Delete" -> Icon(
                 painter = painterResource(id = R.drawable.baseline_backspace_24),
@@ -36,7 +38,8 @@ fun KeyboardButton(
                 modifier = Modifier.size(40.dp)
             )
             else -> Text(
-                text = symbol
+                text = symbol,
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
@@ -11,11 +11,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.prototype.app.horizontalScreenPadding
+import com.example.prototype.app.verticalScreenPadding
+import com.example.prototype.data.PaymentState
+import com.example.prototype.keyboard.Keyboard
+import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.ui.theme.BabyBlue
 import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.LightBlue
 import com.example.prototype.ui.theme.Red
-
 
 @Composable
 fun EnterPriceScreen(
@@ -27,7 +31,7 @@ fun EnterPriceScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = yPad.dp),
+            .padding(vertical = verticalScreenPadding.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -42,11 +46,8 @@ fun EnterPriceScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Bottom
         ) {
-            SimplifiedKeyboard(
-                onAction = onAction,
-                pinScreen = false
-            )
-            Column(modifier = Modifier.padding(horizontal = xPad.dp)) {
+            Keyboard(onAction = onAction, forPinScreen = false, isRandomized = false)
+            Column(modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp)) {
                 NavigationButton(BlueButton, "Pokračovať", onContinueButtonClicked)
                 Spacer(modifier = Modifier.height(12.dp))
                 NavigationButton(Red, "Zrušiť", onCancelButtonClicked)
@@ -57,7 +58,7 @@ fun EnterPriceScreen(
 
 @Composable
 fun KeyboardTextField(state: PaymentState) {
-    Column(modifier = Modifier.padding(horizontal = xPad.dp)) {
+    Column(modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = state.price,

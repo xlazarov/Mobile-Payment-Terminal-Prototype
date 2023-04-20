@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.app
 
 import android.content.Context
 import android.content.res.Resources
@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.runtime.Composable
@@ -14,17 +15,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.prototype.ui.theme.GreyBackground
 
 
-const val xPad = 22
-const val yPad = 30
+var screenWidth = 0f
+const val horizontalScreenPadding = 20
+const val verticalScreenPadding = 30
+fun Modifier.screenPadding(): Modifier = padding(
+    horizontalScreenPadding.dp,
+    verticalScreenPadding.dp
+)
 
-fun Modifier.gradientBackground(): Modifier =
+fun Modifier.gradient(): Modifier =
     clip(
         shape = RoundedCornerShape(50.dp).copy(
             bottomEnd = ZeroCornerSize,
@@ -44,14 +49,11 @@ fun dpToPx(dp: Dp): Float {
 }
 
 @Composable
-fun getScreenWidthDp() : Dp = (LocalConfiguration.current.screenWidthDp - 2 * xPad).dp
+fun getScreenWidthDp(): Dp =
+    (LocalConfiguration.current.screenWidthDp - 2 * horizontalScreenPadding).dp
 
 @Composable
-fun getScreenWidthPx() : Float = dpToPx(dp = getScreenWidthDp())
-
-@Composable
-fun pxToDp(pixels: Float) : Int =
-    (pixels / LocalContext.current.resources.displayMetrics.density).toInt()
+fun getScreenWidthPx(): Float = dpToPx(dp = getScreenWidthDp())
 
 fun vibration(context: Context) {
     val vibrator = ContextCompat.getSystemService(context, Vibrator::class.java)

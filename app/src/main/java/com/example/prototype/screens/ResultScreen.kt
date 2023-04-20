@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -10,13 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.prototype.R
+import com.example.prototype.data.PaymentState
 import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.DarkGrey
 import java.text.SimpleDateFormat

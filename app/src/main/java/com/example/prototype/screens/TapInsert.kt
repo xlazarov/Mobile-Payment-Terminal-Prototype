@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,6 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
+import com.example.prototype.NfcReader
+import com.example.prototype.R
+import com.example.prototype.app.*
+import com.example.prototype.data.PaymentState
 import com.example.prototype.ui.theme.Green
 import com.example.prototype.ui.theme.Red
 import kotlinx.coroutines.delay
@@ -27,7 +31,7 @@ fun TapCardScreen(
 ) {
     Column(
         modifier = Modifier
-            .padding(vertical = yPad.dp, horizontal = xPad.dp)
+            .screenPadding()
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween

@@ -17,9 +17,8 @@
         android:theme="@style/Theme.Prototype"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".app.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Prototype">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,20 +26,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
-            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/techlist" />
         </activity>
-<!--        <activity android:name=".NfcReaderActivity" android:launchMode="singleTask">-->
+        <!--        <activity android:name=".NfcReaderActivity" android:launchMode="singleTask">-->
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.nfc.action.TECH_DISCOVERED"/>-->
-<!--            </intent-filter>-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.nfc.action.TECH_DISCOVERED"/>-->
+        <!--            </intent-filter>-->
 
-<!--            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"-->
-<!--                android:resource="@xml/techlist" />-->
-<!--        </activity>-->
+        <!--            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"-->
+        <!--                android:resource="@xml/techlist" />-->
+        <!--        </activity>-->
 
     </application>
 

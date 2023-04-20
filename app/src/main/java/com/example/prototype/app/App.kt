@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.app
 
 import android.nfc.NfcAdapter
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -11,6 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.prototype.*
+import com.example.prototype.screens.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -32,13 +34,14 @@ val LocalNfcAdapter = compositionLocalOf<NfcAdapter?> { null }
 @Composable
 fun PaymentApp(
     modifier: Modifier = Modifier,
-    viewModel: PaymentViewModel = PaymentViewModel(),
+    PaymentViewModel: PaymentViewModel = PaymentViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
+    screenWidth = getScreenWidthPx()
 
     Scaffold { innerPadding ->
-        val state = viewModel.state
+        val state = PaymentViewModel.state
 
         NavHost(
             navController = navController,
@@ -48,13 +51,13 @@ fun PaymentApp(
             composable(route = PaymentScreen.Price.name) {
                 EnterPriceScreen(
                     state = state,
-                    onAction = viewModel::onAction,
+                    onAction = PaymentViewModel::onAction,
                     onContinueButtonClicked = {
-                        viewModel.alignDecimal()
+                        PaymentViewModel.alignDecimal()
                         navController.navigate(PaymentScreen.TapCard.name)
                     },
                     onCancelButtonClicked = {
-                        cancelPaymentAndNavigateToStart(viewModel, navController)
+                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
                     },
                 )
             }
@@ -65,7 +68,7 @@ fun PaymentApp(
                         state = state,
                         navController = navController,
                         onCancelButtonClicked = {
-                            cancelPaymentAndNavigateToStart(viewModel, navController)
+                            cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
                         }
                     )
                 }
@@ -74,10 +77,10 @@ fun PaymentApp(
                 val coroutineScope = rememberCoroutineScope()
                 EnterPinScreen(
                     state = state,
-                    onAction = viewModel::onAction,
+                    onAction = PaymentViewModel::onAction,
                     onConfirmButtonClicked = {
                         coroutineScope.launch {
-                            checkCorrectPin(viewModel, navController)
+                            checkCorrectPin(PaymentViewModel, navController)
                         }
                     },
                     onCancelButtonClicked = {
@@ -96,21 +99,21 @@ fun PaymentApp(
                 SuccessScreen(
                     state = state,
                     onCloseButtonClicked = {
-                        cancelPaymentAndNavigateToStart(viewModel, navController)
+                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
                     })
-                viewModel.storeAnalysis(context)
+                PaymentViewModel.analysis(context)
             }
             composable(route = PaymentScreen.Failure.name) {
                 FailedScreen(
                     state = state,
                     onRetryButtonClicked = {
-                        viewModel.resetPinAttempts()
+                        PaymentViewModel.resetPinAttempts()
                         navController.navigate(PaymentScreen.TapCard.name)
                     },
                     onCancelButtonClicked = {
-                        cancelPaymentAndNavigateToStart(viewModel, navController)
+                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
                     })
-                viewModel.storeAnalysis(context)
+                PaymentViewModel.analysis(context)
             }
         }
     }

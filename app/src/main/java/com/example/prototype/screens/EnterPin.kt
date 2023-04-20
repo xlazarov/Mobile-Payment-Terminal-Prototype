@@ -1,4 +1,4 @@
-package com.example.prototype
+package com.example.prototype.screens
 
 import android.content.Context
 import androidx.compose.animation.core.Animatable
@@ -23,6 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.prototype.app.*
+import com.example.prototype.data.PaymentState
+import com.example.prototype.keyboard.KeyboardAction
+import com.example.prototype.keyboard.Keyboard
 import com.example.prototype.ui.theme.*
 
 @Composable
@@ -35,12 +39,12 @@ fun EnterPinScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = yPad.dp),
+            .padding(vertical = verticalScreenPadding.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = xPad.dp)
+            modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp)
         ) {
             PaymentInfo(state)
             Spacer(modifier = Modifier.height(10.dp))
@@ -49,7 +53,7 @@ fun EnterPinScreen(
             PinDots(state)
         }
         Column {
-            RandomizedKeyboard(onAction = onAction)
+            Keyboard(onAction = onAction, forPinScreen = true, isRandomized = true)
             PinButtons(state, onAction, onConfirmButtonClicked, onCancelButtonClicked)
         }
     }
@@ -97,7 +101,7 @@ fun PinButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = xPad.dp),
+            .padding(horizontal = horizontalScreenPadding.dp),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
