@@ -17,7 +17,6 @@ val fontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal)
 )
 
-// Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = fontFamily,
@@ -31,11 +30,41 @@ val Typography = Typography(
         fontSize = 18.sp,
         color = Color.White
     )
-    /* Other default text styles to override
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
 )
+
+
+
+/*
+val Typography = Typography(
+    h1 = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        color = DarkFont
+    ),
+    h2 = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        color = DarkFont
+    ),
+    h3 = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        color = DarkFont
+    ),
+    keypad = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Regular,
+        fontSize = 28.sp,
+        color = DarkFont
+    ),
+    button = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        color = Color.White
+    )
+)
+*/
