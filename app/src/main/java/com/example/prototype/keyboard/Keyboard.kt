@@ -4,16 +4,16 @@ import android.content.Context
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import com.example.prototype.app.gradient
-import com.example.prototype.app.screenPadding
-
+import com.example.prototype.root.gradient
+import com.example.prototype.root.screenPadding
 
 fun generateNumpad(isRandomized: Boolean): List<String> {
-    val numpad = (0..9).map { it.toString() }
+    val numpad = ((1..9)+0).map { it.toString() }
     return if (isRandomized) numpad.shuffled() else numpad
 }
 
@@ -50,7 +50,7 @@ fun KeyboardLayout(
     forPinScreen: Boolean,
     isRandomized: Boolean
 ) {
-    val layout = generateLayout(forPinScreen, isRandomized)
+    val layout = remember { generateLayout(forPinScreen, isRandomized) }
     onAction(KeyboardAction.SetKeyboard(isRandomized = isRandomized, layout = layout), context)
 
     layout.forEach { row ->

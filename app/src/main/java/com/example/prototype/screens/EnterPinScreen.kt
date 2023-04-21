@@ -23,10 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prototype.app.*
 import com.example.prototype.data.PaymentState
-import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.keyboard.Keyboard
+import com.example.prototype.keyboard.KeyboardAction
+import com.example.prototype.root.horizontalScreenPadding
+import com.example.prototype.root.verticalScreenPadding
+import com.example.prototype.root.vibration
 import com.example.prototype.ui.theme.*
 
 @Composable
@@ -37,14 +39,12 @@ fun EnterPinScreen(
     onCancelButtonClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = verticalScreenPadding.dp),
+        modifier = Modifier.padding(vertical = verticalScreenPadding.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp)
+            modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PaymentInfo(state)
             Spacer(modifier = Modifier.height(10.dp))
