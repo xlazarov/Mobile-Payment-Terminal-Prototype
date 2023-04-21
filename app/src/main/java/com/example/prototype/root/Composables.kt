@@ -1,6 +1,5 @@
-package com.example.prototype.screens
+package com.example.prototype.root
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -11,17 +10,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prototype.R
 import com.example.prototype.data.PaymentState
 import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.DarkGrey
 import java.text.SimpleDateFormat
 import java.util.*
+
+@Composable
+fun NavigationButton(color: Color, text: String, onClick: () -> Unit = {}) {
+    Button(
+        onClick = onClick,
+        enabled = true,
+        shape = RoundedCornerShape(20.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = color),
+        modifier = Modifier.fillMaxWidth(),
+        elevation = null
+    ) {
+        Text(text)
+    }
+}
 
 @Composable
 fun TransactionResult(result: String, details: String) {
@@ -82,37 +93,4 @@ fun TransactionDetails(state: PaymentState) {
             modifier = Modifier.weight(1f)
         )
     }
-}
-
-@Composable
-fun NavigationButton(color: Color, text: String, onClick: () -> Unit = {}) {
-    Button(
-        onClick = onClick,
-        enabled = true,
-        shape = RoundedCornerShape(20.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = color),
-        modifier = Modifier.fillMaxWidth(),
-        elevation = null
-    ) {
-        Text(text)
-    }
-}
-
-@Composable
-fun SuccessIcon() {
-    val image = painterResource(R.drawable.icon_success)
-    Image(
-        painter = image,
-        contentDescription = null,
-        modifier = Modifier.size(114.dp)
-    )
-}
-
-@Composable
-fun ErrorIcon() {
-    Image(
-        painter = painterResource(id = R.drawable.close),
-        contentDescription = null,
-        modifier = Modifier.size(114.dp)
-    )
 }

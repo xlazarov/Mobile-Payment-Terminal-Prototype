@@ -11,11 +11,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prototype.app.horizontalScreenPadding
-import com.example.prototype.app.verticalScreenPadding
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.Keyboard
 import com.example.prototype.keyboard.KeyboardAction
+import com.example.prototype.root.NavigationButton
+import com.example.prototype.root.horizontalScreenPadding
+import com.example.prototype.root.verticalScreenPadding
 import com.example.prototype.ui.theme.BabyBlue
 import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.LightBlue
@@ -43,7 +44,6 @@ fun EnterPriceScreen(
         )
         KeyboardTextField(state = state)
         Column(
-            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Bottom
         ) {
             Keyboard(onAction = onAction, forPinScreen = false, isRandomized = false)

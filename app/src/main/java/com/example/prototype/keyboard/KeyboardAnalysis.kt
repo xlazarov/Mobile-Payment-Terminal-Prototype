@@ -2,8 +2,8 @@ package com.example.prototype.keyboard
 
 import android.content.Context
 import com.example.prototype.data.KeyboardData
-import com.example.prototype.app.dpToPx
-import com.example.prototype.app.screenWidth
+import com.example.prototype.root.dpToPx
+import com.example.prototype.root.screenWidth
 
 class KeyboardAnalysis(private val keyboard: KeyboardData) {
 

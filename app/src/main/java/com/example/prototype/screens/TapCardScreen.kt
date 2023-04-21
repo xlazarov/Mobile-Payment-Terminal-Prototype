@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
 import com.example.prototype.NfcReader
 import com.example.prototype.R
-import com.example.prototype.app.*
+import com.example.prototype.root.*
 import com.example.prototype.data.PaymentState
 import com.example.prototype.ui.theme.Green
 import com.example.prototype.ui.theme.Red

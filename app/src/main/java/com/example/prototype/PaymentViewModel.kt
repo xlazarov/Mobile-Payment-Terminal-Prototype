@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.prototype.app.vibration
+import com.example.prototype.root.vibration
 import com.example.prototype.data.KeyboardData
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.KeyboardAction

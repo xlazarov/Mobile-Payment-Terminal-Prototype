@@ -6,7 +6,7 @@ import android.nfc.NfcAdapter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
-import com.example.prototype.app.LocalNfcAdapter
+import com.example.prototype.root.LocalNfcAdapter
 
 
 @Composable
