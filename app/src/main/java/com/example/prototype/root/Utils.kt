@@ -24,6 +24,7 @@ import com.example.prototype.ui.theme.GreyBackground
 var screenWidth = 0f
 const val horizontalScreenPadding = 20
 const val verticalScreenPadding = 30
+
 fun Modifier.screenPadding(): Modifier = padding(
     horizontalScreenPadding.dp,
     verticalScreenPadding.dp
@@ -44,10 +45,6 @@ fun Modifier.gradient(): Modifier =
         )
     )
 
-fun dpToPx(dp: Dp): Float {
-    return dp.value * Resources.getSystem().displayMetrics.density
-}
-
 @Composable
 fun getScreenWidthDp(): Dp =
     (LocalConfiguration.current.screenWidthDp - 2 * horizontalScreenPadding).dp
@@ -55,10 +52,11 @@ fun getScreenWidthDp(): Dp =
 @Composable
 fun getScreenWidthPx(): Float = dpToPx(dp = getScreenWidthDp())
 
-fun vibration(context: Context) {
+fun dpToPx(dp: Dp): Float {
+    return dp.value * Resources.getSystem().displayMetrics.density
+}
+fun vibrate(context: Context, duration: Long = 50) {
     val vibrator = ContextCompat.getSystemService(context, Vibrator::class.java)
-    if (vibrator != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val effect = VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
-        vibrator.vibrate(effect)
-    }
+    val effect = VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
+    vibrator?.vibrate(effect)
 }
