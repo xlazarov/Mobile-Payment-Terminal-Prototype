@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.prototype.R
@@ -22,24 +24,24 @@ fun KeyboardButton(
     symbol: String,
     onClick: () -> Unit
 ) {
-
     Box(
         modifier = Modifier
             .size(80.dp)
             .clip(CircleShape)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
-        ) {
+    ) {
         when (symbol) {
             "Delete" -> Icon(
                 painter = painterResource(id = R.drawable.baseline_backspace_24),
                 contentDescription = null,
                 tint = LightBlue,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(30.dp)
             )
             else -> Text(
                 text = symbol,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+               // style = TextStyle(fontFamily = FontFamily.Monospace)
             )
         }
     }
