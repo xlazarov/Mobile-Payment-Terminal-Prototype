@@ -28,7 +28,7 @@ import com.example.prototype.keyboard.Keyboard
 import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.root.horizontalScreenPadding
 import com.example.prototype.root.verticalScreenPadding
-import com.example.prototype.root.vibration
+import com.example.prototype.root.vibrate
 import com.example.prototype.ui.theme.*
 
 @Composable
@@ -36,10 +36,13 @@ fun EnterPinScreen(
     state: PaymentState,
     onAction: (KeyboardAction, Context) -> Unit,
     onConfirmButtonClicked: () -> Unit,
+    onBackButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(vertical = verticalScreenPadding.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = verticalScreenPadding.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
@@ -54,7 +57,12 @@ fun EnterPinScreen(
         }
         Column {
             Keyboard(onAction = onAction, forPinScreen = true, isRandomized = true)
-            PinButtons(state, onAction, onConfirmButtonClicked, onCancelButtonClicked)
+            PinButtons(
+                state,
+                onConfirmButtonClicked,
+                onBackButtonClicked,
+                onCancelButtonClicked
+            )
         }
     }
 }
@@ -75,7 +83,7 @@ fun TitleText(title: String, subtitle: String?) {
             Text(
                 text = subtitle,
                 fontSize = 16.sp,
-                modifier = Modifier.padding(top = 6.dp)
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
     }
@@ -93,16 +101,15 @@ fun PinScreenTitle(state: PaymentState) {
 @Composable
 fun PinButtons(
     state: PaymentState,
-    onAction: (KeyboardAction, Context) -> Unit,
     onConfirmButtonClicked: () -> Unit,
+    onBackButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
-    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = horizontalScreenPadding.dp),
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -129,7 +136,7 @@ fun PinButtons(
             modifier = Modifier.size(62.dp),
             elevation = null,
             colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
-            onClick = { onAction(KeyboardAction.Delete(true), context) })
+            onClick = { onBackButtonClicked() })
         {
             Icon(
                 Icons.Rounded.ArrowBack,
@@ -165,7 +172,7 @@ fun PaymentInfo(state: PaymentState) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(35.dp)
+            .height(30.dp)
     ) {
         Text(
             text = "Platba  ",
@@ -195,14 +202,12 @@ fun PaymentInfo(state: PaymentState) {
 @Composable
 fun PinDots(state: PaymentState) {
     val context = LocalContext.current
-    val count: Int = state.pin.length
-    val wrongPin: Boolean = state.pinAttempts < 3 && state.pin.isBlank()
     val offsetX = remember { Animatable(0f) }
     var color by remember { mutableStateOf(LightGrey) }
 
-    LaunchedEffect(key1 = wrongPin) {
-        if (wrongPin) {
-            vibration(context)
+    LaunchedEffect(state.pinAttempts) {
+        if (state.pinAttempts != 3) {
+            vibrate(context, 100)
             color = Red
             var left = true
             for (i in 1..3) {
@@ -214,12 +219,11 @@ fun PinDots(state: PaymentState) {
         }
     }
     Row(
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(40.dp),
-        modifier = Modifier
-            .height(50.dp)
-            .offset(x = offsetX.value.dp)
+        modifier = Modifier.offset(x = offsetX.value.dp)
     ) {
-        for (i in 0 until count) {
+        for (i in 0 until state.pin.length) {
             Box(
                 modifier = Modifier
                     .size(15.dp)
@@ -227,7 +231,7 @@ fun PinDots(state: PaymentState) {
                     .background(LightBlue)
             )
         }
-        for (i in count until 4) {
+        for (i in state.pin.length until 4) {
             Box(
                 modifier = Modifier
                     .size(15.dp)

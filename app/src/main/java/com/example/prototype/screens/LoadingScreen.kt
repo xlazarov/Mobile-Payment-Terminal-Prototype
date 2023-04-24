@@ -23,7 +23,7 @@ import kotlin.random.Random
 @Composable
 fun LoadingScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(175.dp))
+        Spacer(modifier = Modifier.height(165.dp))
         LoadingBar()
         Spacer(modifier = Modifier.height(35.dp))
         PaymentProgressText()
@@ -61,7 +61,7 @@ fun LoadingBar() {
 
     LaunchedEffect(key1 = Unit) {
         while (true) {
-            delay(300)
+            delay(200)
             count++
         }
     }
@@ -72,10 +72,10 @@ fun LoadingBar() {
     ) {
         for (i in 0 until 4) {
             val offset by animateDpAsState(
-                targetValue = if (i == count % 4) 35.dp else 0.dp, tween(300)
+                targetValue = if (i == count % 4) 35.dp else 0.dp, tween(200)
             )
             val opacity by animateFloatAsState(
-                targetValue = if (i == count % 4) 0.3f else 1f, tween(300)
+                targetValue = if (i == count % 4) 0.3f else 1f, tween(200)
             )
             Box(modifier = Modifier.padding(bottom = offset), contentAlignment = Alignment.BottomCenter) {
                 Box(
