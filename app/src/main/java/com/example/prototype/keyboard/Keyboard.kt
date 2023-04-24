@@ -36,7 +36,7 @@ fun handleButtonClick(
 ) {
     when (symbol) {
         "." -> onAction(KeyboardAction.Decimal, context)
-        "Delete" -> onAction(KeyboardAction.Delete(false), context)
+        "Delete" -> onAction(KeyboardAction.Delete, context)
         else -> onAction(
             KeyboardAction.Number(symbol.toInt(), forPinScreen), context
         )
@@ -88,7 +88,7 @@ fun Keyboard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+              //  .align(Alignment.BottomCenter)
                 .screenPadding()
                 .pointerInput(Unit) {
                     detectTapGestures(

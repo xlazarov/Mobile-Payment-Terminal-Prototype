@@ -79,11 +79,17 @@ fun PaymentApp(
                     state = state,
                     onAction = PaymentViewModel::onAction,
                     onConfirmButtonClicked = {
+                        vibrate(context)
                         coroutineScope.launch {
                             checkCorrectPin(PaymentViewModel, navController)
                         }
                     },
+                    onBackButtonClicked = {
+                        vibrate(context)
+                        PaymentViewModel.deletePin()
+                    },
                     onCancelButtonClicked = {
+                        vibrate(context)
                         navController.navigate(PaymentScreen.TapCard.name)
                     }
                 )
@@ -128,7 +134,7 @@ private suspend fun checkCorrectPin(
     viewModel: PaymentViewModel,
     navController: NavHostController
 ) {
-    if (viewModel.correctPin()) {
+    if (viewModel.isCorrectPin()) {
         navController.navigate(PaymentScreen.Loading.name)
     } else {
         viewModel.wrongPin()
@@ -138,7 +144,6 @@ private suspend fun checkCorrectPin(
         }
     }
 }
-
 
 /**
  * Resets the [PaymentState] and pops up to [PaymentScreen.Price]

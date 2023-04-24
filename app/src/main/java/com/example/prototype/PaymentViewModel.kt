@@ -5,11 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.prototype.root.vibration
 import com.example.prototype.data.KeyboardData
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.keyboard.KeyboardAnalysis
+import com.example.prototype.root.vibrate
 
 class PaymentViewModel : ViewModel() {
 
@@ -18,17 +18,14 @@ class PaymentViewModel : ViewModel() {
 
     fun onAction(action: KeyboardAction, context: Context) {
         if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.SetKeyboard)) {
-            vibration(context)
+            vibrate(context)
         }
         when (action) {
             is KeyboardAction.Number -> enterNumber(action.number, action.pinScreen)
-            is KeyboardAction.Delete -> delete(action.pinScreen)
+            is KeyboardAction.Delete -> deleteNumber()
             is KeyboardAction.Decimal -> enterDecimal()
             is KeyboardAction.MissClick -> recordCoordinates(action.x, action.y)
-            is KeyboardAction.SetKeyboard -> setKeyboard(
-                action.isRandomized,
-                action.layout
-            )
+            is KeyboardAction.SetKeyboard -> setKeyboard(action.isRandomized, action.layout)
         }
     }
 
@@ -44,7 +41,7 @@ class PaymentViewModel : ViewModel() {
         }
     }
 
-    fun correctPin(): Boolean {
+    fun isCorrectPin(): Boolean {
         return state.pin == CORRECT_PIN
     }
 
@@ -60,7 +57,7 @@ class PaymentViewModel : ViewModel() {
         state = state.copy(pinAttempts = 3)
     }
 
-    fun resetTapData() {
+    private fun resetTapData() {
         keyboard = keyboard.copy(missClicks = emptyList())
     }
 
@@ -81,14 +78,11 @@ class PaymentViewModel : ViewModel() {
         state = state.copy(price = price.reversed())
     }
 
-    private fun delete(pinScreen: Boolean) {
-        // Delete from PIN
-        if (pinScreen) {
-            state = state.copy(pin = "")
-            return
-        }
+    fun deletePin() {
+        state = state.copy(pin = "")
+    }
 
-        // Delete from price
+    private fun deleteNumber() {
         if (state.price != "0") {
             state = state.copy(price = state.price.dropLast(1))
             formatPriceString()
@@ -145,6 +139,7 @@ class PaymentViewModel : ViewModel() {
     private fun recordCoordinates(x: Float, y: Float) {
         keyboard = keyboard.copy(missClicks = keyboard.missClicks + Pair(x, y))
     }
+
     fun analysis(context: Context) {
         KeyboardAnalysis(keyboard).storeAnalysis(context)
         resetTapData()

@@ -2,7 +2,7 @@ package com.example.prototype.keyboard
 
 sealed class KeyboardAction {
     data class Number(val number: Int, val pinScreen: Boolean) : KeyboardAction()
-    data class Delete(val pinScreen: Boolean) : KeyboardAction()
+    object Delete : KeyboardAction()
     object Decimal : KeyboardAction()
     data class MissClick(val x: Float, val y: Float) : KeyboardAction()
 

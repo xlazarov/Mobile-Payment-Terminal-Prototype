@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,10 +23,14 @@ import java.util.*
 
 @Composable
 fun NavigationButton(color: Color, text: String, onClick: () -> Unit = {}) {
+    val context = LocalContext.current
     Button(
-        onClick = onClick,
+        onClick = {
+            onClick()
+            vibrate(context)
+        },
         enabled = true,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(50.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = color),
         modifier = Modifier.fillMaxWidth(),
         elevation = null
@@ -54,7 +59,7 @@ fun TransactionResult(result: String, details: String) {
 
 @Composable
 fun TransactionDetails(state: PaymentState) {
-    Row{
+    Row {
         Text(
             text = "SUMA",
             fontSize = 16.sp,
