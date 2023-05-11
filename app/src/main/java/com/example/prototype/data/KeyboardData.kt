@@ -8,5 +8,5 @@ data class KeyboardData(
     val isRandomized: Boolean = false,
     val layout: Array<Array<String>> = emptyArray(),
     val missClicks: List<Pair<Float, Float>> = emptyList(),
-    val buttonSize: Dp = 80.dp
+    val buttonSize: Dp = 70.dp
 )

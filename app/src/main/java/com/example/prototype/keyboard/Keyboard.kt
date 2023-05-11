@@ -5,7 +5,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -51,7 +50,7 @@ fun KeyboardLayout(
     isRandomized: Boolean
 ) {
     val layout = remember { generateLayout(forPinScreen, isRandomized) }
-    onAction(KeyboardAction.SetKeyboard(isRandomized = isRandomized, layout = layout), context)
+    onAction(KeyboardAction.Layout(isRandomized = isRandomized, layout = layout), context)
 
     layout.forEach { row ->
         Row(
@@ -88,7 +87,6 @@ fun Keyboard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-              //  .align(Alignment.BottomCenter)
                 .screenPadding()
                 .pointerInput(Unit) {
                     detectTapGestures(

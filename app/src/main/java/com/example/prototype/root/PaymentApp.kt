@@ -38,7 +38,6 @@ fun PaymentApp(
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
-    screenWidth = getScreenWidthPx()
 
     Scaffold { innerPadding ->
         val state = PaymentViewModel.state
@@ -79,17 +78,19 @@ fun PaymentApp(
                     state = state,
                     onAction = PaymentViewModel::onAction,
                     onConfirmButtonClicked = {
-                        vibrate(context)
+                        clickResponse(context)
                         coroutineScope.launch {
                             checkCorrectPin(PaymentViewModel, navController)
                         }
                     },
                     onBackButtonClicked = {
-                        vibrate(context)
+                        clickResponse(context)
                         PaymentViewModel.deletePin()
                     },
                     onCancelButtonClicked = {
-                        vibrate(context)
+                        clickResponse(context)
+                        PaymentViewModel.deletePin()
+                        PaymentViewModel.resetPinAttempts()
                         navController.navigate(PaymentScreen.TapCard.name)
                     }
                 )

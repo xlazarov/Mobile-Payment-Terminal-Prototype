@@ -23,7 +23,6 @@ fun NfcReader(onTagDiscovered: () -> Unit) {
             NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
             null
         )
-
         onDispose {
             nfcAdapter.disableReaderMode(context)
         }

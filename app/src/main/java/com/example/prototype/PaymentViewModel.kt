@@ -9,7 +9,7 @@ import com.example.prototype.data.KeyboardData
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.keyboard.KeyboardAnalysis
-import com.example.prototype.root.vibrate
+import com.example.prototype.root.clickResponse
 
 class PaymentViewModel : ViewModel() {
 
@@ -17,15 +17,15 @@ class PaymentViewModel : ViewModel() {
     var keyboard by mutableStateOf(KeyboardData())
 
     fun onAction(action: KeyboardAction, context: Context) {
-        if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.SetKeyboard)) {
-            vibrate(context)
+        if ((action !is KeyboardAction.MissClick) && (action !is KeyboardAction.Layout)) {
+            clickResponse(context)
         }
         when (action) {
             is KeyboardAction.Number -> enterNumber(action.number, action.pinScreen)
             is KeyboardAction.Delete -> deleteNumber()
             is KeyboardAction.Decimal -> enterDecimal()
             is KeyboardAction.MissClick -> recordCoordinates(action.x, action.y)
-            is KeyboardAction.SetKeyboard -> setKeyboard(action.isRandomized, action.layout)
+            is KeyboardAction.Layout -> setKeyboard(action.isRandomized, action.layout)
         }
     }
 
