@@ -1,16 +1,25 @@
 package com.example.prototype.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.prototype.R
 import com.example.prototype.data.PaymentState
-import com.example.prototype.root.*
+import com.example.prototype.root.NavigationButton
+import com.example.prototype.root.PlayTone
+import com.example.prototype.root.TransactionDetails
 import com.example.prototype.ui.theme.BlueButton
+import com.example.prototype.ui.theme.Green
+import com.example.prototype.ui.theme.Red
 
 
 @Composable
@@ -18,37 +27,47 @@ fun SuccessScreen(
     state: PaymentState,
     onCloseButtonClicked: () -> Unit
 ) {
-    Box(modifier = Modifier.padding(top = 80.dp)) {
+    PlayTone(R.raw.zapsplat_success_tone2)
+
+    ResultScreenLayout(upperSpace = 80) {
+        SuccessIcon()
+        GenerateText("Platba prebehla\núspešne!", "Ďakujeme.")
+        Column {
+            TransactionDetails(state)
+            Spacer(modifier = Modifier.height(30.dp))
+            NavigationButton(BlueButton, "Zatvoriť", onCloseButtonClicked)
+        }
+    }
+}
+
+
+@Composable
+fun IconWithBackground(icon: ImageVector, backgroundColor: Color) {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .background(Color.White)
+    ) {
         Box(
             modifier = Modifier
+                .padding(10.dp)
+                .clip(CircleShape)
                 .fillMaxSize()
-                .padding(top = 80.dp)
-                .gradient()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .screenPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .background(backgroundColor)
+                .padding(20.dp)
         ) {
-            SuccessIcon()
-            TransactionResult(result = "Platba prebehla úspešne!", details = "Ďakujeme.")
-            Column {
-                TransactionDetails(state)
-                Spacer(modifier = Modifier.height(30.dp))
-                NavigationButton(BlueButton, "Zatvoriť", onCloseButtonClicked)
-            }
+            GetIcon(icon)
         }
     }
 }
 
 @Composable
 fun SuccessIcon() {
-    val image = painterResource(R.drawable.icon_success)
-    Image(
-        painter = image,
-        contentDescription = null,
-        modifier = Modifier.size(100.dp)
-    )
+    IconWithBackground(Icons.Rounded.Done, Green)
+}
+
+@Composable
+fun FailureIcon() {
+    IconWithBackground(Icons.Rounded.Close, Red)
 }

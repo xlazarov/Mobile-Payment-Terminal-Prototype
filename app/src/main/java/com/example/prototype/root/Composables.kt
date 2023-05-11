@@ -1,101 +1,107 @@
 package com.example.prototype.root
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.prototype.data.PaymentState
-import com.example.prototype.ui.theme.BlueButton
-import com.example.prototype.ui.theme.DarkGrey
+import com.example.prototype.ui.theme.LightBlue
+import com.example.prototype.ui.theme.Typography
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 @Composable
-fun NavigationButton(color: Color, text: String, onClick: () -> Unit = {}) {
+fun PlayTone(id: Int) {
+    val context = LocalContext.current
+    val mediaPlayer = remember { MediaPlayer.create(context, id) }
+    var tonePlayed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!tonePlayed) {
+            tonePlayed = true
+            mediaPlayer.setOnCompletionListener { mediaPlayer.release() }
+            mediaPlayer.start()
+        }
+    }
+}
+
+@Composable
+fun NavigationButton(
+    color: Color,
+    text: String,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true
+) {
     val context = LocalContext.current
     Button(
+        enabled = enabled,
         onClick = {
             onClick()
-            vibrate(context)
+            clickResponse(context)
         },
-        enabled = true,
         shape = RoundedCornerShape(50.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = color),
         modifier = Modifier.fillMaxWidth(),
         elevation = null
     ) {
-        Text(text)
+        Text(text = text, style = Typography.button)
+    }
+}
+
+
+@Composable
+fun PaymentInfo(state: PaymentState) {
+    Column(
+        modifier = Modifier.height(40.dp),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        GenerateRow("Platba  ", state.price, "  EUR")
+        Divider(color = LightBlue)
     }
 }
 
 @Composable
-fun TransactionResult(result: String, details: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun GenerateRow(string1: String, string2: String, string3: String?) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom
+    ) {
         Text(
-            text = result,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            text = string1,
+            style = Typography.h4
         )
-        Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = details,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp
+            text = string2,
+            style = Typography.h3,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f)
+
+        )
+        Text(
+            text = string3.orEmpty(),
+            style = Typography.h4
         )
     }
 }
 
 @Composable
 fun TransactionDetails(state: PaymentState) {
-    Row {
-        Text(
-            text = "SUMA",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-        Text(
-            text = state.price + " EUR",
-            textAlign = TextAlign.End,
-            color = BlueButton,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.weight(1f)
-        )
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-    TabRowDefaults.Divider(
-        thickness = 1.dp,
-        color = DarkGrey
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-    Row {
-        Text(
-            text = "DÁTUM PLATBY",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-        val time = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd.MM.yyyy, HH:mm", Locale.getDefault())
-        val current = formatter.format(time)
-        Text(
-            text = current.toString(),
-            textAlign = TextAlign.End,
-            color = BlueButton,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.weight(1f)
-        )
-    }
+    val time = Calendar.getInstance().time
+    val formatter = SimpleDateFormat("dd. MM. yyyy,  HH:mm", Locale.getDefault())
+    val current = formatter.format(time)
+
+    PaymentInfo(state = state)
+    Spacer(modifier = Modifier.height(5.dp))
+    GenerateRow("Dátum  ", current.toString(), null)
 }
