@@ -9,6 +9,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.prototype.root.LocalNfcAdapter
 
 
+/**
+ *  Composable function that is responsible for setting up and handling NFC tag reading.
+ */
 @Composable
 fun NfcReader(onTagDiscovered: () -> Unit) {
     val context = LocalContext.current

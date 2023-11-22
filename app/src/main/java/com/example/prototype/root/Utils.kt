@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.media.AudioManager
 import android.media.ToneGenerator
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
+import android.nfc.NfcAdapter
+import android.os.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,12 +28,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.prototype.ui.theme.GreyBackground
+import kotlinx.coroutines.coroutineScope
 
 
 var screenWidth = 0f
 
+var buttonSize = 0.dp
+var isRandomized = false
+
+val LocalNfcAdapter = compositionLocalOf<NfcAdapter?> { null }
+
 const val horizontalScreenPadding = 20
-const val verticalScreenPadding = 30
+const val verticalScreenPadding = 20
 
 fun Modifier.horizontalScreenPadding(): Modifier = padding(
     horizontal = horizontalScreenPadding.dp
@@ -49,6 +54,10 @@ fun Modifier.screenPadding(): Modifier = padding(
     verticalScreenPadding.dp
 )
 
+
+/**
+ * Returns a modifier of gradient background effect and custom shape.
+ */
 fun Modifier.gradient(): Modifier =
     clip(
         shape = RoundedCornerShape(50.dp).copy(
@@ -64,44 +73,58 @@ fun Modifier.gradient(): Modifier =
         )
     )
 
-fun Modifier.bounceClick() = composed {
-    var buttonPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (buttonPressed) 0.60f else 1f)
+
+/**
+ * Adds a bounce effect to the click behavior of a modifier and returns it.
+ */
+fun Modifier.bounceClick(onClick: () -> Unit) = composed {
+    var pressed by remember { mutableStateOf(false) }
+    val size by animateFloatAsState(if (pressed) 0.60f else 1f)
 
     this
         .graphicsLayer {
-            scaleX = scale
-            scaleY = scale
+            scaleX = size
+            scaleY = size
         }
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = { }
+            onClick = { onClick() }
         )
-        .pointerInput(buttonPressed) {
-            awaitPointerEventScope {
-                buttonPressed = if (buttonPressed) {
-                    waitForUpOrCancellation()
-                    false
-                } else {
-                    awaitFirstDown(false)
-                    true
+        .pointerInput(pressed) {
+            coroutineScope {
+                awaitPointerEventScope {
+                    pressed = if (pressed) {
+                        waitForUpOrCancellation()
+                        false
+                    } else {
+                        awaitFirstDown(false)
+                        true
+                    }
                 }
             }
         }
 }
 
 @Composable
-fun getScreenWidthDp(): Dp =
+fun screenWidthNoMargin(): Dp =
+    (LocalConfiguration.current.screenWidthDp).dp
+
+@Composable
+fun screenWidthDp(): Dp =
     (LocalConfiguration.current.screenWidthDp - 2 * horizontalScreenPadding).dp
 
 @Composable
-fun getScreenWidthPx(): Float = dpToPx(dp = getScreenWidthDp())
+fun screenWidthPx(): Float = dpToPx(dp = screenWidthDp())
 
 fun dpToPx(dp: Dp): Float {
     return dp.value * Resources.getSystem().displayMetrics.density
 }
 
+
+/**
+ * Triggers a vibration of specified [duration] using the device's vibrator.
+ */
 fun vibrate(context: Context, duration: Long = 50) {
     val vibrator = ContextCompat.getSystemService(context, Vibrator::class.java)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -110,8 +133,13 @@ fun vibrate(context: Context, duration: Long = 50) {
     }
 }
 
+val toneGenerator = ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME)
+fun playTone(){
+    toneGenerator.startTone(ToneGenerator.TONE_DTMF_5, 100)
+    toneGenerator.stopTone()
+}
+
 fun clickResponse(context: Context) {
     vibrate(context)
-    val toneGenerator = ToneGenerator(AudioManager.STREAM_DTMF, 80)
-    toneGenerator.startTone(ToneGenerator.TONE_DTMF_5, 50)
+    playTone()
 }

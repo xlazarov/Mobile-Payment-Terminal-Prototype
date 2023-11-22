@@ -2,20 +2,31 @@ package com.example.prototype.keyboard
 
 import android.content.Context
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import com.example.prototype.root.gradient
-import com.example.prototype.root.screenPadding
+import com.example.prototype.root.verticalScreenPadding
 
+
+/**
+ * Generates the keypad order for the keyboard based on [isRandomized] boolean value.
+ */
 fun generateNumpad(isRandomized: Boolean): List<String> {
-    val numpad = ((1..9)+0).map { it.toString() }
+    val numpad = ((1..9) + 0).map { it.toString() }
     return if (isRandomized) numpad.shuffled() else numpad
 }
 
+
+/**
+ * Returns the layout for the keyboard based on the specified configuration
+ * of [forPinScreen] and [isRandomized].
+ */
 fun generateLayout(forPinScreen: Boolean, isRandomized: Boolean): Array<Array<String>> {
     val numpad = generateNumpad(isRandomized)
 
@@ -27,6 +38,11 @@ fun generateLayout(forPinScreen: Boolean, isRandomized: Boolean): Array<Array<St
     )
 }
 
+
+/**
+ * Handles the click event of a keyboard button.
+ * Based on [symbol] associated with the clicked button, a specific [KeyboardAction] is called.
+ */
 fun handleButtonClick(
     symbol: String,
     onAction: (KeyboardAction, Context) -> Unit,
@@ -42,6 +58,12 @@ fun handleButtonClick(
     }
 }
 
+
+/**
+ * A composable function that represents a keyboard layout of given [context]
+ * based on [forPinScreen] and [isRandomized] specification.
+ * [onAction] is a callback function to be invoked when a keyboard action is performed.
+ */
 @Composable
 fun KeyboardLayout(
     onAction: (KeyboardAction, Context) -> Unit,
@@ -73,6 +95,12 @@ fun KeyboardLayout(
     }
 }
 
+
+/**
+ * Based on [forPinScreen] and [isRandomized] defines a keyboard
+ * of given type of layout for a specific screen.
+ * [onAction] is a callback function to be invoked when a keyboard action is performed.
+ */
 @Composable
 fun Keyboard(
     onAction: (KeyboardAction, Context) -> Unit,
@@ -81,29 +109,25 @@ fun Keyboard(
 ) {
     val context = LocalContext.current
 
-    Box(
-        modifier = Modifier.gradient()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScreenPadding()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        onAction(KeyboardAction.MissClick(it.x, it.y), context)
+                    }
+                )
+            },
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .screenPadding()
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            onAction(KeyboardAction.MissClick(it.x, it.y), context)
-                        }
-                    )
-                },
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            KeyboardLayout(
-                onAction = onAction,
-                context = context,
-                forPinScreen = forPinScreen,
-                isRandomized = isRandomized
-            )
-        }
+        KeyboardLayout(
+            onAction = onAction,
+            context = context,
+            forPinScreen = forPinScreen,
+            isRandomized = isRandomized
+        )
     }
 }
 

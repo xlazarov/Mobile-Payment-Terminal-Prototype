@@ -13,17 +13,25 @@ import com.example.prototype.ui.theme.LightBlue
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
+
+/**
+ * Composable function that represents a loading screen.
+ */
 @ExperimentalAnimationApi
 @Composable
-fun LoadingScreen() {
+fun ProcessingScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(175.dp))
+        Spacer(modifier = Modifier.height(165.dp))
         LoadingAnimation()
         Spacer(modifier = Modifier.height(35.dp))
         PaymentProgressText()
     }
 }
 
+
+/**
+ * Represents an text animation of payment processing.
+ */
 @Composable
 fun PaymentProgressText() {
     val count = remember { mutableStateOf(1) }
@@ -42,14 +50,18 @@ fun PaymentProgressText() {
     )
 }
 
+
+/**
+ * Represents a loading bar animation of payment processing, made of dots indicating entered PIN.
+ */
 @Composable
 fun LoadingAnimation() {
-    var count by remember { mutableStateOf(-1) }
+    var dot by remember { mutableStateOf(-1) }
 
     LaunchedEffect(key1 = Unit) {
         while (true) {
             delay(250)
-            count++
+            dot++
         }
     }
 
@@ -58,18 +70,22 @@ fun LoadingAnimation() {
         horizontalArrangement = Arrangement.spacedBy(40.dp),
         modifier = Modifier.height(50.dp)
     ) {
-        GenerateLoadingBar(count = count)
+        GenerateLoadingBar(dot = dot)
     }
 }
 
+
+/**
+ * Represents a loading bar that animates the offset and opacity for dot that equals [dot].
+ */
 @Composable
-fun GenerateLoadingBar(count: Int) {
+fun GenerateLoadingBar(dot: Int) {
     for (i in 0 until 4) {
         val offset by animateDpAsState(
-            targetValue = if (i == count % 4) 35.dp else 0.dp, tween(250)
+            targetValue = if (i == dot % 4) 35.dp else 0.dp, tween(250)
         )
         val opacity by animateFloatAsState(
-            targetValue = if (i == count % 4) 0.3f else 1f, tween(250)
+            targetValue = if (i == dot % 4) 0.3f else 1f, tween(250)
         )
 
         Box(

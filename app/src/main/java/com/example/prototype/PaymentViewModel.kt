@@ -11,6 +11,11 @@ import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.keyboard.KeyboardAnalysis
 import com.example.prototype.root.clickResponse
 
+
+/**
+ * ViewModel class that manages the [state] and logic related to payment processing
+ * and [keyboard] for miss-click management and its further analysis.
+ */
 class PaymentViewModel : ViewModel() {
 
     var state by mutableStateOf(PaymentState())
@@ -21,7 +26,7 @@ class PaymentViewModel : ViewModel() {
             clickResponse(context)
         }
         when (action) {
-            is KeyboardAction.Number -> enterNumber(action.number, action.pinScreen)
+            is KeyboardAction.Number -> enterNumber(action.number, action.isPinScreen)
             is KeyboardAction.Delete -> deleteNumber()
             is KeyboardAction.Decimal -> enterDecimal()
             is KeyboardAction.MissClick -> recordCoordinates(action.x, action.y)
@@ -111,7 +116,8 @@ class PaymentViewModel : ViewModel() {
 
     private fun enterNumber(number: Int, pinScreen: Boolean) {
         if (pinScreen) {
-            if (state.pin.length == MAX_PIN_LENGTH) return
+            if (state.pin.length == MAX_PIN_LENGTH)
+                return
             state = state.copy(pin = state.pin + number)
             return
         }
@@ -119,7 +125,9 @@ class PaymentViewModel : ViewModel() {
         if (state.price.contains(".")) {
             return enterDecimal(number)
         }
-        if ((state.price.length >= MAX_NUM_LENGTH)) return
+
+        if ((state.price.length >= MAX_NUM_LENGTH))
+            return
 
         state = if (state.price == "0") {
             state.copy(price = "" + number)

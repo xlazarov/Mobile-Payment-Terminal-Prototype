@@ -26,14 +26,19 @@ import androidx.compose.ui.unit.dp
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.Keyboard
 import com.example.prototype.keyboard.KeyboardAction
-import com.example.prototype.root.PaymentInfo
-import com.example.prototype.root.horizontalScreenPadding
-import com.example.prototype.root.verticalScreenPadding
-import com.example.prototype.root.vibrate
+import com.example.prototype.root.*
 import com.example.prototype.ui.theme.*
 
+
+/**
+ * Composable function that represents a pin screen for payment authentication.
+ *
+ * Payment [state] contains relevant payment data to display, [onAction] handles keyboard actions,
+ * and [onConfirmButtonClicked], [onBackButtonClicked], [onCancelButtonClicked] are functions
+ * invoked when selected button is clicked.
+ */
 @Composable
-fun EnterPinScreen(
+fun PinScreen(
     state: PaymentState,
     onAction: (KeyboardAction, Context) -> Unit,
     onConfirmButtonClicked: () -> Unit,
@@ -55,8 +60,8 @@ fun EnterPinScreen(
             PinScreenText(state = state)
             PinDots(state = state)
         }
-        Column {
-            Keyboard(onAction = onAction, forPinScreen = true, isRandomized = true)
+        Column(modifier = Modifier.gradient()) {
+            Keyboard(onAction = onAction, forPinScreen = true, isRandomized = isRandomized)
             PinButtons(
                 state,
                 onConfirmButtonClicked,
@@ -67,7 +72,12 @@ fun EnterPinScreen(
     }
 }
 
+
 // TEXT
+
+/**
+ * Composable function that generates a text display with a [title] and optional [subtitle].
+ */
 @Composable
 fun GenerateText(title: String, subtitle: String?) {
     Column(
@@ -97,6 +107,11 @@ fun PinScreenText(state: PaymentState) {
 
 
 // PIN DOTS
+
+/**
+ * Represents the dots that indicate four presses to enter the PIN code
+ * and shake animation of the dots when a wrong pin is entered.
+ */
 @Composable
 fun PinDots(state: PaymentState) {
     val context = LocalContext.current
@@ -189,16 +204,16 @@ fun ConfirmButton(
         colors = ButtonDefaults.buttonColors(backgroundColor = Green),
         onClick = { onConfirmButtonClicked() })
     {
-        GetIcon(Icons.Rounded.Done)
+        GetIcon(Icons.Rounded.Done, state.pin.length >= 4)
     }
 }
 
 @Composable
-fun GetIcon(image: ImageVector) {
+fun GetIcon(image: ImageVector, enabled: Boolean = true) {
     Icon(
         imageVector = image,
         contentDescription = null,
-        tint = Color.White,
+        tint = if (enabled) Color.White else DarkGrey,
         modifier = Modifier.fillMaxSize()
     )
 }

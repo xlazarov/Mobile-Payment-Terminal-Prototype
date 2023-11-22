@@ -17,24 +17,6 @@ val fontFamily = FontFamily(
     Font(R.font.poppins_medium, FontWeight.Medium),
     Font(R.font.poppins_regular, FontWeight.Normal)
 )
-/*
-
-val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 30.sp,
-        color = DarkFont
-    ),
-    button = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
-        color = Color.White
-    )
-)
-*/
-
 
 val Typography = Typography(
     // Price TextField
@@ -45,7 +27,6 @@ val Typography = Typography(
         color = DarkFont,
         textAlign = TextAlign.End
     ),
-
     // Main Info
     h2 = TextStyle(
         fontFamily = fontFamily,
@@ -54,7 +35,6 @@ val Typography = Typography(
         color = DarkFont,
         textAlign = TextAlign.Center
     ),
-
     // Details
     h3 = TextStyle(
         fontFamily = fontFamily,
@@ -63,7 +43,6 @@ val Typography = Typography(
         color = DarkFont,
         textAlign = TextAlign.Center
     ),
-
     // Details colored parts
     h4 = TextStyle(
         fontFamily = fontFamily,
@@ -71,7 +50,6 @@ val Typography = Typography(
         fontSize = 22.sp,
         color = LightBlue
     ),
-
     // Keypad
     h5 = TextStyle(
         fontFamily = fontFamily,

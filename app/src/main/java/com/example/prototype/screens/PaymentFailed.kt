@@ -1,8 +1,11 @@
 package com.example.prototype.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.prototype.R
@@ -12,15 +15,21 @@ import com.example.prototype.ui.theme.BlueButton
 import com.example.prototype.ui.theme.Red
 
 
+/**
+ * Composable function that represents a screen indicating payment failed.
+ *
+ * Payment [state] contains relevant payment data to display and [onRetryButtonClicked],
+ * [onCancelButtonClicked] are functions invoked when selected button is clicked.
+ */
 @Composable
-fun FailedScreen(
+fun PaymentFailedScreen(
     state: PaymentState,
     onRetryButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
     PlayTone(R.raw.zapsplat_error_tone1)
 
-    ResultScreenLayout(upperSpace = 40) {
+    ResultScreenLayout(upperSpace = 20) {
         FailureIcon()
         GenerateText(
             "Platba zlyhala",
@@ -28,7 +37,7 @@ fun FailedScreen(
         )
         Column {
             TransactionDetails(state)
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             NavigationButton(BlueButton, "Skúsiť znova", onRetryButtonClicked)
             Spacer(modifier = Modifier.height(12.dp))
             NavigationButton(Red, "Zrušiť", onCancelButtonClicked)
@@ -36,23 +45,8 @@ fun FailedScreen(
     }
 }
 
+
 @Composable
-fun ResultScreenLayout(upperSpace: Int, content: @Composable () -> Unit) {
-    Box(modifier = Modifier.padding(top = upperSpace.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 80.dp)
-                .gradient()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .screenPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            content()
-        }
-    }
+fun FailureIcon() {
+    IconWithBackground(Icons.Rounded.Close, Red)
 }

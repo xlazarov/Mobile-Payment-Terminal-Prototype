@@ -9,17 +9,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.prototype.data.PaymentState
 import com.example.prototype.keyboard.Keyboard
 import com.example.prototype.keyboard.KeyboardAction
 import com.example.prototype.root.NavigationButton
+import com.example.prototype.root.gradient
 import com.example.prototype.root.horizontalScreenPadding
 import com.example.prototype.root.verticalScreenPadding
-import com.example.prototype.ui.theme.*
+import com.example.prototype.ui.theme.BlueButton
+import com.example.prototype.ui.theme.LightBlue
+import com.example.prototype.ui.theme.Red
+import com.example.prototype.ui.theme.Typography
 
+
+/**
+ * Composable function that represents the screen for entering the payment amount.
+ *
+ * Payment [state] contains relevant payment data to display, [onAction] handles keyboard actions,
+ * and [onContinueButtonClicked], [onCancelButtonClicked] are functions invoked when
+ * selected button is clicked.
+ */
 @Composable
-fun EnterPriceScreen(
+fun PriceScreen(
     state: PaymentState,
     onAction: (KeyboardAction, Context) -> Unit,
     onCancelButtonClicked: () -> Unit = {},
@@ -32,10 +43,11 @@ fun EnterPriceScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Platba", style = Typography.h4, fontSize = 24.sp)
+        Text(text = "Platba", style = Typography.h4)
         KeyboardTextField(state = state)
         Column(
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.gradient()
         ) {
             Keyboard(onAction = onAction, forPinScreen = false, isRandomized = false)
             GenerateButtons(state, onCancelButtonClicked, onContinueButtonClicked)
@@ -43,6 +55,10 @@ fun EnterPriceScreen(
     }
 }
 
+
+/**
+ * Generates navigation buttons of the screen.
+ */
 @Composable
 fun GenerateButtons(
     state: PaymentState,
@@ -63,6 +79,11 @@ fun GenerateButtons(
     }
 }
 
+
+/**
+ * Represents a text field for the keyboard.
+ * Displays the payment price based on [state] and currency in a row layout.
+ */
 @Composable
 fun KeyboardTextField(state: PaymentState) {
     Column(modifier = Modifier.padding(horizontal = horizontalScreenPadding.dp)) {

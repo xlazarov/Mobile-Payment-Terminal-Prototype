@@ -24,6 +24,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+/**
+ * Composable function that represents a screen inviting the customer to pay.
+ *
+ * Payment [state] contains relevant payment data to display,
+ * [navController] is used for navigation and [onCancelButtonClicked] is a function
+ * invoked when cancel button clicked.
+ */
 @Composable
 fun TapCardScreen(
     state: PaymentState,
@@ -47,6 +54,10 @@ fun TapCardScreen(
     }
 }
 
+
+/**
+ *  Represents a payment animation using Lottie library.
+ */
 @Composable
 fun PaymentAnimation() {
     val compositeResult: LottieCompositionResult = rememberLottieComposition(
@@ -63,12 +74,17 @@ fun PaymentAnimation() {
     LottieAnimation(
         composition = compositeResult.value,
         progress = progressAnimation,
-        modifier = Modifier.size(getScreenWidthDp())
+        modifier = Modifier.size(screenWidthDp())
     )
 }
 
 
 // LED PROGRESS BAR
+
+/**
+ * Displays an NFC progress bar with LED lights, animated when NFC tag is detected by [NfcReader].
+ * After the animation is finished, function navigates to [PaymentScreen.PIN] by [navController].
+ */
 @Composable
 fun LedProgressBar(navController: NavController) {
     Row(
@@ -101,7 +117,7 @@ fun GenerateLedLights(
     spacing: Dp = 20.dp,
     progress: Int
 ) {
-    val ledWidth = (getScreenWidthDp() - (spacing * (numLeds - 1))) / numLeds
+    val ledWidth = (screenWidthDp() - (spacing * (numLeds - 1))) / numLeds
 
     for (i in 0 until numLeds) {
         val color = if (i < progress) Green else Green.copy(alpha = 0.2f)

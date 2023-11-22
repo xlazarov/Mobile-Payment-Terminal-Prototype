@@ -12,9 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prototype.*
+import com.example.prototype.data.PaymentState
 import com.example.prototype.screens.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 /**
  * enum values that represent the screens in the app
@@ -28,19 +30,19 @@ enum class PaymentScreen {
     Failure
 }
 
-val LocalNfcAdapter = compositionLocalOf<NfcAdapter?> { null }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PaymentApp(
     modifier: Modifier = Modifier,
-    PaymentViewModel: PaymentViewModel = PaymentViewModel(),
+    ViewModel: PaymentViewModel = PaymentViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
 
     Scaffold { innerPadding ->
-        val state = PaymentViewModel.state
+
+        val state = ViewModel.state
 
         NavHost(
             navController = navController,
@@ -48,15 +50,16 @@ fun PaymentApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = PaymentScreen.Price.name) {
-                EnterPriceScreen(
+                PriceScreen(
                     state = state,
-                    onAction = PaymentViewModel::onAction,
+                    onAction = ViewModel::onAction,
                     onContinueButtonClicked = {
-                        PaymentViewModel.alignDecimal()
+                        ViewModel.alignDecimal()
                         navController.navigate(PaymentScreen.TapCard.name)
                     },
                     onCancelButtonClicked = {
-                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
+                        clickResponse(context)
+                        exitProcess(-1)
                     },
                 )
             }
@@ -67,60 +70,60 @@ fun PaymentApp(
                         state = state,
                         navController = navController,
                         onCancelButtonClicked = {
-                            cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
+                            cancelPaymentAndNavigateToStart(ViewModel, navController)
                         }
                     )
                 }
             }
             composable(route = PaymentScreen.PIN.name) {
                 val coroutineScope = rememberCoroutineScope()
-                EnterPinScreen(
+                PinScreen(
                     state = state,
-                    onAction = PaymentViewModel::onAction,
+                    onAction = ViewModel::onAction,
                     onConfirmButtonClicked = {
                         clickResponse(context)
                         coroutineScope.launch {
-                            checkCorrectPin(PaymentViewModel, navController)
+                            checkCorrectPin(ViewModel, navController)
                         }
                     },
                     onBackButtonClicked = {
                         clickResponse(context)
-                        PaymentViewModel.deletePin()
+                        ViewModel.deletePin()
                     },
                     onCancelButtonClicked = {
                         clickResponse(context)
-                        PaymentViewModel.deletePin()
-                        PaymentViewModel.resetPinAttempts()
+                        ViewModel.deletePin()
+                        ViewModel.resetPinAttempts()
                         navController.navigate(PaymentScreen.TapCard.name)
                     }
                 )
             }
             composable(route = PaymentScreen.Loading.name) {
-                LoadingScreen()
+                ProcessingScreen()
                 LaunchedEffect(key1 = Unit) {
                     delay(4000)
                     navController.navigate(PaymentScreen.Success.name)
                 }
             }
             composable(route = PaymentScreen.Success.name) {
-                SuccessScreen(
+                PaymentSuccessScreen(
                     state = state,
                     onCloseButtonClicked = {
-                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
+                        cancelPaymentAndNavigateToStart(ViewModel, navController)
                     })
-                PaymentViewModel.analysis(context)
+                ViewModel.analysis(context)
             }
             composable(route = PaymentScreen.Failure.name) {
-                FailedScreen(
+                PaymentFailedScreen(
                     state = state,
                     onRetryButtonClicked = {
-                        PaymentViewModel.resetPinAttempts()
+                        ViewModel.resetPinAttempts()
                         navController.navigate(PaymentScreen.TapCard.name)
                     },
                     onCancelButtonClicked = {
-                        cancelPaymentAndNavigateToStart(PaymentViewModel, navController)
+                        cancelPaymentAndNavigateToStart(ViewModel, navController)
                     })
-                PaymentViewModel.analysis(context)
+                ViewModel.analysis(context)
             }
         }
     }
@@ -128,8 +131,8 @@ fun PaymentApp(
 
 /**
  * Checks the [PaymentState.pin] and pops up to [PaymentScreen.Loading] if correct,
- * otherwise lowers the [PaymentState.pinAttempts], resets the PIN,
- * and pops up to [PaymentScreen.Failure] if no attempts left
+ * otherwise lowers the [PaymentState.pinAttempts], resets the [PaymentState.pin],
+ * and pops up to [PaymentScreen.Failure] if no attempts left.
  */
 private suspend fun checkCorrectPin(
     viewModel: PaymentViewModel,
@@ -147,7 +150,7 @@ private suspend fun checkCorrectPin(
 }
 
 /**
- * Resets the [PaymentState] and pops up to [PaymentScreen.Price]
+ * Resets the [State] and pops up to [PaymentScreen.Price]
  */
 private fun cancelPaymentAndNavigateToStart(
     viewModel: PaymentViewModel,
